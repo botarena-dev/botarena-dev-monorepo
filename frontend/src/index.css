@@ -1,0 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Rajdhani:wght@500;600;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --bg-deep: #080b12;
+  --bg-mid: #101a2d;
+  --bg-glow: #113f7a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Rajdhani", sans-serif;
+  color: #e8f2ff;
+  background:
+    radial-gradient(1200px 700px at 10% -10%, rgba(42, 132, 255, 0.35), transparent 60%),
+    radial-gradient(900px 600px at 95% 110%, rgba(14, 255, 203, 0.18), transparent 70%),
+    linear-gradient(145deg, var(--bg-deep), var(--bg-mid) 58%, #06090f);
+}

@@ -72,7 +72,7 @@ socket.on("game:state", (gameState) => {
     gameState.status === "running" &&
     gameState.frame !== lastFrameISentCommand
   ) {
-    if (gameState.frame % 100 === 0) {
+    if (gameState.frame < 100 && gameState.frame % 2 === 0) {
       socket.emit("game:command", {
         frame: gameState.frame,
         command: "left",

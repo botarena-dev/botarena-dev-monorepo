@@ -2,6 +2,8 @@ export type PublicPlayerState = {
   id: string;
   x: number;
   y: number;
+  prevX: number;
+  prevY: number;
   alive: boolean;
   azimuth: number;
 };
@@ -23,6 +25,7 @@ export type PublicGameState = {
   playersReady: string[];
   playersCommandsThisFrame: { publicKey: string; command: PlayerCommand }[];
   players: PublicPlayerState[];
+  grid: Uint8Array;
 };
 
 export type ArenaState = {
@@ -70,14 +73,29 @@ export const createGameState = (
     playersReady: [],
     playersCommandsThisFrame: [],
     players: [],
+    grid: new Uint8Array(400 * 200),
   };
+
+  // Spawning has buffer of 10% of the canvas size from the borders
+  const spawnBufferX = gameState.canvasWidth * 0.1;
+  const spawnBufferY = gameState.canvasHeight * 0.1;
 
   // Set players positions
   for (const publicKey of playersPublicKeys) {
+    const x = Math.floor(
+      Math.random() * (gameState.canvasWidth - 2 * spawnBufferX) + spawnBufferX,
+    );
+    const y = Math.floor(
+      Math.random() * (gameState.canvasHeight - 2 * spawnBufferY) +
+        spawnBufferY,
+    );
+
     gameState.players.push({
       id: `p${gameState.players.length + 1}-${publicKey.slice(0, 6)}`,
-      x: Math.floor(Math.random() * gameState.canvasWidth),
-      y: Math.floor(Math.random() * gameState.canvasHeight),
+      x,
+      y,
+      prevX: x,
+      prevY: y,
       alive: true,
       azimuth: Math.floor(Math.random() * 360),
     });
@@ -151,6 +169,127 @@ export const connectPlayerBotToGame = (
   }
 };
 
+const pixelIndex = (width: number) => (x: number, y: number) => {
+  return Math.floor(y) * width + Math.floor(x);
+};
+
+const markLine = (
+  gameState: PublicGameState,
+  player: PublicPlayerState,
+  playerIndex: number,
+) => {
+  const { x: x1, y: y1, prevX: x0, prevY: y0, id } = player;
+  const steps = Math.ceil(Math.hypot(x1 - x0, y1 - y0));
+
+  for (let i = 0; i < steps; i++) {
+    const t = steps === 0 ? 0 : i / steps;
+
+    const ix = x0 + (x1 - x0) * t;
+    const iy = y0 + (y1 - y0) * t;
+
+    const markValue = 1 + (playerIndex + 1);
+
+    // Mark small circle around the point to avoid holes in the line
+    const radius = 3;
+    for (let dx = -radius; dx <= radius; dx++) {
+      for (let dy = -radius; dy <= radius; dy++) {
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance <= radius) {
+          const px = ix + dx;
+          const py = iy + dy;
+          if (
+            px >= 0 &&
+            px < gameState.canvasWidth &&
+            py >= 0 &&
+            py < gameState.canvasHeight
+          ) {
+            gameState.grid[pixelIndex(gameState.canvasWidth)(px, py)] =
+              markValue;
+          }
+        }
+      }
+    }
+
+    // gameState.grid[pixelIndex(gameState.canvasWidth)(ix, iy)] = markValue;
+  }
+};
+
+export const evaluteFrame = (gameId: string) => {
+  const gameState = getGameState(gameId);
+  if (!gameState) {
+    return;
+  }
+  const TURN_SPEED = 0.06; // radians per frame
+
+  // For each command played this frame, update the corresponding player state
+  for (const { publicKey, command } of gameState.playersCommandsThisFrame) {
+    const player = gameState.players.find((p) =>
+      p.id.endsWith(publicKey.slice(0, 6)),
+    );
+    if (!player) {
+      continue;
+    }
+    if (!player.alive) {
+      continue;
+    }
+    switch (command) {
+      case "left":
+        player.azimuth =
+          (player.azimuth - TURN_SPEED + 2 * Math.PI) % (2 * Math.PI);
+        break;
+      case "right":
+        player.azimuth = (player.azimuth + TURN_SPEED) % (2 * Math.PI);
+        break;
+      case "nop":
+        break;
+    }
+
+    // Move player in the direction of the azimuth
+    const radians = player.azimuth;
+    player.prevX = player.x;
+    player.prevY = player.y;
+    player.x += Math.cos(radians);
+    player.y += Math.sin(radians);
+
+    markLine(gameState, player, gameState.players.indexOf(player));
+
+    // Check for collisions with walls
+    if (
+      player.x < 0 ||
+      player.x >= gameState.canvasWidth ||
+      player.y < 0 ||
+      player.y >= gameState.canvasHeight
+    ) {
+      player.alive = false;
+      console.log(
+        `Player ${player.id} collided with wall and died at frame ${gameState.frame} in game ${gameId}`
+          .red,
+      );
+    }
+
+    // Check for collisions with other players
+    for (const otherPlayer of gameState.players) {
+      if (otherPlayer.id === player.id) {
+        continue;
+      }
+      if (!otherPlayer.alive) {
+        continue;
+      }
+      const dx = player.x - otherPlayer.x;
+      const dy = player.y - otherPlayer.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 2) {
+        player.alive = false;
+        otherPlayer.alive = false;
+        console.log(
+          `Player ${player.id} collided with player ${otherPlayer.id} and both died at frame ${gameState.frame} in game ${gameId}`
+            .red,
+        );
+      }
+    }
+  }
+};
+
 export const moveToNextFrame = (gameId: string, io: any) => {
   const gameState = getGameState(gameId);
   if (!gameState) {
@@ -160,10 +299,16 @@ export const moveToNextFrame = (gameId: string, io: any) => {
     `All players have played their command for frame ${gameState.frame} in game ${gameId}, moving to next frame!`
       .green,
   );
+
+  // Evaluate frame based on the commands
+  evaluteFrame(gameId);
+
   gameState.frame = gameState.frame + 1;
   gameState.playersCommandsThisFrame = [];
 
-  if (gameState.frame > gameState.maxFrames) {
+  const alivePlayers = gameState.players.filter((p) => p.alive);
+
+  if (alivePlayers.length < 2 || gameState.frame > gameState.maxFrames) {
     gameState.status = "finished";
     gameState.endedAt = Date.now();
     console.log(`Game ${gameId} has ended!`.red);

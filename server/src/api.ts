@@ -8,8 +8,11 @@ export const createAPI = () => {
   const router = express.Router();
 
   router.get("/simulation", (_req, res) => {
-    const battleground = new Battleground([1, 2, 3]);
-    res.send({ players: battleground.players, grid: battleground.grid });
+    // const battleground = new Battleground([1, 2, 3]);
+    // res.send({ players: battleground.players, grid: battleground.grid });
+
+    const gameState = getGameState("arena-1"); // TODO: Dynamic game ID
+    res.send(gameState);
   });
 
   router.get("/game/state", (_req, res) => {

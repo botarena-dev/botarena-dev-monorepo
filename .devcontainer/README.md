@@ -7,7 +7,7 @@ Here we document decisions and explain the logic behind some of the opinionated 
 ### Preferred option
 
 ```bash
-# Generate ED25519 key for the developer it can be used for SSH, signing commits, encrypting/sharing local or env specific .env, sending sensitive files or diagrams, etc. 
+# Generate ED25519 key for the developer it can be used for SSH, signing commits, encrypting/sharing local or env specific .env, sending sensitive files or diagrams, etc.
 # Please change "developer@company.domain" and name of the key "developer-key" (USE PASSWORD)
 ssh-keygen -t ed25519 -C "developer@company.domain"  -f ./.devcontainer/.secrets/KEYS/developer-key
 
@@ -16,7 +16,20 @@ ssh-keygen -t ed25519 -C "developer@company.domain"  -f ./.devcontainer/.secrets
 ssh-keygen -t ed25519 -C "local-env-developer@company.domain"  -f ./.devcontainer/.secrets/KEYS/local-env-key
 ```
 
+After generating the key you need to add public key to your github profile
+
+Finally, to enable signing you need to
+
+```bash
+# To use ssh key for signing
+git config --global gpg.format ssh
+
+# Set signing key
+git config --global user.signingkey /workspaces/botarena-dev-monorepo/.devcontainer/.secrets/KEYS/local-env-key
+```
+
 Encrypting the .env files to .enc.env
+
 ```bash
 # First time to create .enc.env as empty sops/age file
 sops encrypt --age "$(cat ./.devcontainer/.secrets/KEYS/developer-key.pub)" --input-type dotenv --output-type dotenv .enc.env > .enc.env
@@ -65,6 +78,6 @@ age-keygen -o sops_age_key.txt
 sops encrypt --age <pub_key> .env > .enc.env
 SOPS_AGE_KEY_FILE="./sops_age_key.txt" sops decrypt .enc.env > .env
 
-# How to open vscode 
+# How to open vscode
 SOPS_AGE_KEY_FILE="./sops_age_key.txt" EDITOR="code --wait" sops .env
 ```

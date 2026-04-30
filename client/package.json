@@ -8,7 +8,8 @@
     "dev": "tsx watch index.ts",
     "dev1": "BOT_PRIVATE_KEY_INDEX=1 pnpm run dev",
     "dev2": "BOT_PRIVATE_KEY_INDEX=2 pnpm run dev",
-    "start": "tsx index.ts"
+    "start": "tsx index.ts",
+    "generate-key": "tsx createKey.ts"
   },
   "keywords": [],
   "author": "",

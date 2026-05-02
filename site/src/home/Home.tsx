@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 export const Home = () => {
   return (
@@ -30,6 +30,15 @@ export const Home = () => {
         A developer-first competitive platform where autonomous bots battle in
         fast-paced arenas inspired by curve fever mechanics.
       </Typography>
+
+      <Button
+        variant="outlined"
+        color="text"
+        size="large"
+        sx={{ width: "20rem" }}
+      >
+        Join
+      </Button>
     </Box>
   );
 };

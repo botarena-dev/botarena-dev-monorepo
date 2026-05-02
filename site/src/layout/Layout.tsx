@@ -11,14 +11,30 @@ export const Layout = () => {
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h6">Bot Arena</Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="h6" sx={{ mr: 4 }}>
+              LOGO
+            </Typography>
 
-          <Box>
             <Button component={Link} to="/about" color="text">
               About
             </Button>
             <Button component={Link} to="/contribute" color="text">
               Contribute
+            </Button>
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Button component={Link} to="/sign-in" color="text">
+              Sign In
+            </Button>
+            <Button
+              variant="outlined"
+              component={Link}
+              to="/sign-up"
+              color="text"
+            >
+              Sign Up
             </Button>
           </Box>
         </Toolbar>

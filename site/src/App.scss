@@ -1,0 +1,17 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: "Source Sans Pro", sans-serif;
+  color: #211916;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}

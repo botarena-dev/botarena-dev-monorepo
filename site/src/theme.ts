@@ -88,7 +88,7 @@ export const themeObj: ThemeOptions = {
     h5: { fontSize: "1.33rem", fontWeight: 700, lineHeight: 1 },
     h6: { fontSize: "1.25rem", fontWeight: 700, lineHeight: 1 },
     body1: { fontSize: "1rem", fontWeight: 500 },
-    caption: { fontSize: "rem", color: alpha(black, 0.4) },
+    caption: { fontSize: "0.75rem", color: alpha(black, 0.4) },
   },
   shape: {
     borderRadius: 2,

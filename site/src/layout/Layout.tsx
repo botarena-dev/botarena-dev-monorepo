@@ -1,19 +1,26 @@
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
-import { Outlet } from "react-router";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { Link, Outlet } from "react-router";
 
 export const Layout = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <AppBar position="static">
-        <Toolbar>
-          <Button variant="text" color="text">
-            text
-          </Button>
-          <Button variant="outlined">outlined</Button>
-          <Button variant="contained">contained</Button>
-          <Button variant="outlined" color="text">
-            outlined text
-          </Button>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="h6">Bot Arena</Typography>
+
+          <Box>
+            <Button component={Link} to="/about" color="text">
+              About
+            </Button>
+            <Button component={Link} to="/contribute" color="text">
+              Contribute
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box

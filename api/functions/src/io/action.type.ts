@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import type { Request, Response } from "express";
 
 type ActionBody<T> = {
   action: { name: string };
@@ -10,3 +10,10 @@ type ActionBody<T> = {
 };
 
 export type Action<T> = Request<any, any, ActionBody<T>>;
+
+export type ActionResponseBody<T> = {
+  data?: T;
+  error?: any;
+};
+
+export type ActionResponse<T = undefined> = Response<ActionResponseBody<T>>;

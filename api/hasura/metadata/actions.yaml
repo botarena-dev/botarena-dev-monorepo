@@ -1,6 +1,18 @@
-actions: []
+actions:
+  - name: signUp
+    definition:
+      kind: synchronous
+      handler: '{{ACTION_BASE_URL}}/auth/sign-up'
+      forward_client_headers: true
+      headers:
+        - name: x-hook-secret
+          value_from_env: HOOK_SECRET
+    permissions:
+      - role: anonymous
 custom_types:
   enums: []
-  input_objects: []
-  objects: []
+  input_objects:
+    - name: SignUpInput
+  objects:
+    - name: SignUpOutput
   scalars: []

@@ -20,8 +20,6 @@ export const signUp = async (
 
   const hashedPassword = await hashPassword(arg1.password);
 
-  console.log(process.env.HASURA_ADMIN_SECRET);
-
   //TODO: Store the user in the database with the hashed password
   const response = await client.mutation(
     /* GraphQL */ `
@@ -47,8 +45,6 @@ export const signUp = async (
       email: arg1.email,
     },
   );
-
-  console.log(response.error);
 
   res.status(200).json({
     id: response.data.insert_users_one.id,

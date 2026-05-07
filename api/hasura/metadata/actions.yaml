@@ -1,4 +1,11 @@
 actions:
+  - name: signIn
+    definition:
+      kind: ""
+      handler: '{{ACTION_BASE_URL}}/auth/sign-in'
+      headers:
+        - name: x-hook-secret
+          value_from_env: HOOK_SECRET
   - name: signUp
     definition:
       kind: synchronous
@@ -13,6 +20,8 @@ custom_types:
   enums: []
   input_objects:
     - name: SignUpInput
+    - name: SignInInput
   objects:
     - name: SignUpOutput
+    - name: SignInOutput
   scalars: []

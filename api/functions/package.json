@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch index.ts"
+    "dev": "tsx watch index.ts",
+    "generate-key": "tsx createKey.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "jose": "^6.2.3",
     "zod": "^4.4.3"
   },
   "devDependencies": {

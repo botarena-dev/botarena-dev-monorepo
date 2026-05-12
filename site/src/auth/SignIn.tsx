@@ -1,6 +1,6 @@
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useLazyQuery } from "@apollo/client/react/compiled";
 
 import { SIGN_IN } from "./io/sign-in.graphql";
@@ -25,6 +25,9 @@ export const SignIn = () => {
 
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname ?? "/home";
+
   const onSubmit = async (data: SignInInput) => {
     const signInResponse = await signIn({
       variables: { email: data.email, password: data.password },
@@ -38,7 +41,7 @@ export const SignIn = () => {
       if (usersResponse?.data?.users[0]) {
         setUser(usersResponse?.data?.users[0]);
 
-        navigate("/home");
+        navigate(from, { replace: true });
       }
     }
   };

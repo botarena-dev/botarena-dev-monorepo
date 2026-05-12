@@ -8,6 +8,8 @@ import { Contribute } from "./contribute/Contribute";
 import { About } from "./about/About";
 import { SignUp } from "./auth/SignUp";
 import { SignIn } from "./auth/SignIn";
+import { ProtectedRoute } from "./layout/utils/ProtectedRoute";
+import { RegisterBot } from "./register-bots/RegisterBot";
 
 function App() {
   return (
@@ -16,6 +18,10 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contribute" element={<Contribute />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/register-bot" element={<RegisterBot />} />
+        </Route>
       </Route>
 
       <Route path="/sign-in" element={<SignIn />} />

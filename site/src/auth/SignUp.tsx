@@ -1,9 +1,9 @@
 import { useMutation } from "@apollo/client/react";
 import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
-import { SIGN_UP } from "./sign-up.graphql";
+import { SIGN_UP } from "./io/sign-up.graphql";
 
 type SignUpInput = {
   email: string;
@@ -17,10 +17,10 @@ export const SignUp = () => {
 
   const [signUp] = useMutation(SIGN_UP);
 
-  const onSubmit = async (data: SignUpInput) => {
-    console.log(data);
+  const navigate = useNavigate();
 
-    const result = await signUp({
+  const onSubmit = async (data: SignUpInput) => {
+    await signUp({
       variables: {
         email: data.email,
         password: data.password,
@@ -28,7 +28,7 @@ export const SignUp = () => {
       },
     });
 
-    // TODO: Handle the result, e.g., show success message, redirect, etc.
+    navigate("/home");
   };
 
   return (

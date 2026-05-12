@@ -44,7 +44,11 @@ export const signIn = async (
     throw new Error("Invalid credentials");
   }
 
-  const accessToken = await provideJWT(["user"], user.id, user.email);
+  const accessToken = await provideJWT(
+    ["user"],
+    user.id.toString(),
+    user.email,
+  );
 
   res.status(200).json({
     accessToken,

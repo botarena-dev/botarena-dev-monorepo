@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD
+
+  graphql-engine:
+    image: hasura/graphql-engine:v2.48.16
+    ports:
+      - "4001:8080"
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - HASURA_GRAPHQL_DATABASE_URL
+      - HASURA_GRAPHQL_ADMIN_SECRET
+      - HASURA_GRAPHQL_ENABLE_CONSOLE
+      - HASURA_GRAPHQL_DEV_MODE
+      - HASURA_GRAPHQL_ENABLE_TELEMETRY
+      - HASURA_GRAPHQL_UNAUTHORIZED_ROLE
+      - HASURA_GRAPHQL_JWT_SECRET
+      - HASURA_GRAPHQL_CORS_DOMAIN
+      - HASURA_GRAPHQL_CONSOLE_ASSETS_DIR
+      - HASURA_GRAPHQL_ENABLED_LOG_TYPES
+      - ACTION_BASE_URL
+      - HOOK_SECRET
+      - HOOK_SECRET_HEADER_NAME
+
+volumes:
+  db_data:

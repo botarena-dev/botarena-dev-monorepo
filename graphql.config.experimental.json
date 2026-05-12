@@ -1,0 +1,12 @@
+{
+    "projects": [
+        {
+            "name":"Botarena API - Admin",
+            "default": true,
+            "url": "{{MY_GRAPHQL_API_INTROSPECTION_URL}}",
+            "headers":{
+                "x-hasura-admin-secret": "{{MY_GRAPHQL_API_INTROSPECTION_HASURA_ADMIN_SECRET}}"
+            }
+        }
+    ]
+}

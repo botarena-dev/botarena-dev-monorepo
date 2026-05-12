@@ -6,6 +6,8 @@ actions:
       headers:
         - name: x-hook-secret
           value_from_env: HOOK_SECRET
+    permissions:
+      - role: anonymous
   - name: signUp
     definition:
       kind: synchronous

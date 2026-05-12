@@ -1,10 +1,11 @@
 import * as z from "zod";
+import { Router } from "express";
 
 import { hashPassword } from "@/routes/auth/utils/hashPassword";
 import { client } from "@/io/graphql";
 
-import type { Action } from "@/io/action.type";
 import type { Response } from "express";
+import type { Action } from "@/io/action.type";
 
 const SignUpInput = z.object({
   nickname: z.string().min(3).max(30),
@@ -50,8 +51,11 @@ export const signUp = async (
     id: response.data.insert_users_one.id,
   });
 };
+const router = Router();
 
-export default signUp;
+router.all("/auth/sign-up", signUp);
+
+export default router;
 
 /*
     curl -X POST http://localhost:3000/auth/sign-up \

@@ -102,6 +102,13 @@ export const themeObj: ThemeOptions = {
         },
       },
     },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: (theme) => ({
+          color: theme.theme.palette.text.secondary,
+        }),
+      },
+    },
     MuiButton: {
       variants: [
         {

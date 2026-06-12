@@ -1,4 +1,4 @@
-export const createED25519Keypair = async (): Promise<{
+export const createED25519KeypairPEM = async (): Promise<{
   publicKey: string;
   privateKey: string;
 }> => {

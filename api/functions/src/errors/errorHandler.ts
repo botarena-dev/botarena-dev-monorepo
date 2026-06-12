@@ -2,16 +2,15 @@ import { ZodError } from "zod";
 
 import { formatValidationError } from "@/errors/formatValidationError";
 
-import type { Action, ActionResponse } from "@/io/action.type";
+import type { Action } from "@/io/action.type";
+import type { Response } from "express";
 
 export const errorHandler = (
   err: Error,
   req: Action<any>,
-  res: ActionResponse,
+  res: Response,
   next: any,
 ) => {
-  console.error(err);
-
   if (err instanceof ZodError) {
     const validationError = formatValidationError(err);
 

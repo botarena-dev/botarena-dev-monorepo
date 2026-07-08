@@ -1,16 +1,12 @@
-import { Battleground } from "./game-engine/old-index.ts";
-import type { PublicGameState } from "./game-engine/index.ts";
-import express from "express";
+import "colors";
 
-import { getGameState } from "./game-engine/index.ts";
+import express from "express";
+import { getGameState } from "@/game-engine";
 
 export const createAPI = () => {
   const router = express.Router();
 
   router.get("/simulation", (_req, res) => {
-    // const battleground = new Battleground([1, 2, 3]);
-    // res.send({ players: battleground.players, grid: battleground.grid });
-
     const gameState = getGameState("arena-1"); // TODO: Dynamic game ID
     res.send(gameState);
   });

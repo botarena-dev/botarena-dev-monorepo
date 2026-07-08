@@ -1,13 +1,14 @@
 import { Server, Socket } from "socket.io";
-import type { Server as HttpServer } from "node:http";
+
 import z from "zod";
 
 import {
   getGameState,
   connectPlayerBotToGame,
   playerPlaysCommand,
-} from "./game-engine/index.ts";
-import type { PlayerCommand } from "./game-engine/index.ts";
+} from "@/game-engine";
+
+import type { Server as HttpServer } from "node:http";
 
 export const createSendServerMessage =
   (socket: Server | Socket) => (message: string) => {
@@ -88,7 +89,6 @@ export const createSocketIoServer = (httpServer: HttpServer) => {
         `Received command from client ${socket.id} for game ${gameId}: ${command} at frame ${frame}`,
       );
       playerPlaysCommand(gameId!, command, frame, publicKey, socket, io);
-      // broadcastPublicState();
     });
 
     socket.on("disconnect", () => {
@@ -97,14 +97,6 @@ export const createSocketIoServer = (httpServer: HttpServer) => {
       );
     });
   });
-
-  // const timer = setInterval(() => {
-  //   const gameState = getGameState("arena-1"); // TODO: Dynamic game ID
-  //   if (!gameState || gameState.status !== "running") {
-  //     return;
-  //   }
-  //   // broadcastPublicState();
-  // }, 300);
 
   return { io };
 };

@@ -1,44 +1,11 @@
-export type PublicPlayerState = {
-  id: string;
-  x: number;
-  y: number;
-  prevX: number;
-  prevY: number;
-  alive: boolean;
-  azimuth: number;
-};
-
-export type PublicGameState = {
-  gameId: string;
-  gameType: "curve-arena";
-  canvasWidth: number;
-  canvasHeight: number;
-  possibleCommandsInFrame: readonly PlayerCommand[];
-  status: "waiting" | "running" | "finished";
-  frame: number;
-  maxFrames: number;
-  createdAt: number | null;
-  startedAt: number | null;
-  endedAt: number | null;
-  updatedAt: number;
-  playersPublicKeys: string[];
-  playersReady: string[];
-  playersCommandsThisFrame: { publicKey: string; command: PlayerCommand }[];
-  players: PublicPlayerState[];
-  grid: Uint8Array;
-};
-
-export type ArenaState = {
-  status: "waiting" | "running" | "finished";
-  frames: { [frame: number]: {} };
-  result: "p1" | "p2" | "p3" | "p4" | "draw" | null;
-};
-
-const possibleCommandsInFrame = ["nop", "left", "right"] as const;
-
-export type PlayerCommand = (typeof possibleCommandsInFrame)[number];
-
 import { randomUUID } from "node:crypto";
+
+import { PublicGameState } from "@/game-engine/types/game-state.type";
+import {
+  PlayerCommand,
+  possibleCommandsInFrame,
+} from "@/game-engine/types/commands";
+import { PublicPlayerState } from "@/game-engine/types/player-state.type";
 
 const inMemoryGameStates: { [gameId: string]: PublicGameState } = {};
 
